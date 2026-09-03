@@ -1,0 +1,7 @@
+command:
+  - "uvicorn"
+  - "main:app"   # Assumes your FastAPI instantiation is called 'app' inside 'main.py'
+  - "--host"
+  - "0.0.0.0"
+  - "--port"
+  - "8000"
