@@ -1,13 +1,11 @@
-import os
 from typing import Union
+
 from fastapi import FastAPI
 from pydantic import BaseModel
-
-from dotenv import load_dotenv
-from sqlalchemy import String, Column, Integer, Identity, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import create_engine
+
+from db import Restaurant, create_db_engine
 
 app = FastAPI()
 
@@ -18,32 +16,9 @@ class RestaurantIn(BaseModel):
     address: Union[str, None] = None
 
 
-# SqlAlchemy model
-class Base(DeclarativeBase):
-    pass
+engine = create_db_engine(echo=True)
 
-
-class Restaurant(Base):
-    __tablename__ = "restaurants"
-    id = Column(Integer, Identity(start=1, cycle=True), primary_key=True)
-    name = Column(String(100), nullable=False)
-    address = Column(String(100), nullable=True)
-
-
-# Connect to the database
-load_dotenv(".env")
-DBUSER = os.environ["DBUSER"]
-DBPASS = os.environ["DBPASS"]
-DBHOST = os.environ["DBHOST"]
-DBNAME = os.environ["DBNAME"]
-DATABASE_URI = f"postgresql://{DBUSER}:{DBPASS}@{DBHOST}/{DBNAME}"
-if DBHOST != "localhost":
-    DATABASE_URI += "?sslmode=require"
-
-engine = create_engine(DATABASE_URI, echo=True)
-
-# Create tables in database
-Base.metadata.create_all(engine)
+# Tables are created by Alembic: run `poetry run alembic upgrade head`
 
 
 @app.get("/")

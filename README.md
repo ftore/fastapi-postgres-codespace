@@ -5,12 +5,31 @@ This repo can be opened in a [Codespaces](https://docs.github.com/en/codespaces/
 
 ## Running the sample
 
-1. Copy *.env.devcontainer* to *.env*.
+1. Copy *.env.devcontainer* to *.env*. Set `DBSCHEMA` to the Postgres schema the
+   tables should live in (defaults to `public`); it is created if missing.
 
-2. Start the web app:
+2. Install dependencies and apply the database migrations:
 
   ```
-  uvicorn main:app --reload
+  poetry install
+  poetry run alembic upgrade head
+  ```
+
+3. Start the web app:
+
+  ```
+  poetry run uvicorn main:app --reload
+  ```
+
+## Database migrations
+
+The schema is managed by [Alembic](https://alembic.sqlalchemy.org/). *alembic/env.py*
+reads the same connection settings as the app from *db.py*, so no database URL is
+stored in *alembic.ini*. After changing a model in *db.py*:
+
+  ```
+  poetry run alembic revision --autogenerate -m "describe the change"
+  poetry run alembic upgrade head
   ```
 
 ## Pydantic and SQLAlchemy
