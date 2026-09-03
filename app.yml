@@ -5,3 +5,14 @@ command:
   - "0.0.0.0"
   - "--port"
   - "8000"
+
+spec:
+  env:
+    - name: ENV
+      value: 'prod'
+    # Postgres schema the tables live in; matches DBSCHEMA in .env-prod.
+    - name: DBSCHEMA
+      value: 'test'
+    # Lakebase endpoint: projects/<id>/branches/<id>/endpoints/<id>
+    - name: LAKEBASE_ENDPOINT_NAME
+      value: 'projects/test/branches/production/endpoints/primary'

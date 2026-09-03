@@ -21,6 +21,19 @@ This repo can be opened in a [Codespaces](https://docs.github.com/en/codespaces/
   poetry run uvicorn main:app --reload
   ```
 
+## Running against the Databricks database
+
+*.env-prod* points at the Lakebase endpoint and carries no password: with `ENV=prod`
+the app fetches a 60-minute database token through the Databricks SDK and rotates it
+before expiry. Locally it authenticates with the CLI profile named by
+`DATABRICKS_CONFIG_PROFILE`; on Databricks Apps (*app.yml*) it uses the app's own
+identity, and `PGHOST`/`PGPORT`/`PGUSER`/`PGDATABASE`/`PGSSLMODE` are injected by the
+platform for the attached database resource.
+
+  ```
+  ENV_FILE=.env-prod poetry run uvicorn main:app --reload
+  ```
+
 ## Database migrations
 
 The schema is managed by [Alembic](https://alembic.sqlalchemy.org/). *alembic/env.py*
