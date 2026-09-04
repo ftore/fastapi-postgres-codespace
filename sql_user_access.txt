@@ -1,0 +1,10 @@
+-- 1. Enable the OAuth authentication extension
+CREATE EXTENSION IF NOT EXISTS databricks_auth;
+
+-- 2. Map your app's service principal to a Postgres role
+SELECT databricks_create_role('<YOUR_DATABRICKS_CLIENT_ID>', 'service_principal');
+
+-- 3. Grant basic schema and connectivity rights
+GRANT USAGE ON SCHEMA test TO "<YOUR_DATABRICKS_CLIENT_ID>";
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA test TO "<YOUR_DATABRICKS_CLIENT_ID>";
+ALTER DEFAULT PRIVILEGES IN SCHEMA test GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "<YOUR_DATABRICKS_CLIENT_ID>";
